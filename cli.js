@@ -1,7 +1,8 @@
+#!/usr/bin/env node
 /*
  * @Date: 2020-3-3 18:30:09
  * @LastEditors: Huang canfeng
- * @LastEditTime: 2020-03-03 18:59:45
+ * @LastEditTime: 2020-03-03 20:04:37
  * @Description: 输入文件夹自动初始化对应的js和scss文件
  */
 const { join } = require("path");
@@ -29,11 +30,12 @@ from(args)
   .subscribe(folder => {
     // 根据返回的目录执行具体的写文件操作
     if (!folder) console.log("folder exists");
-
+    // 初始化index.js文件
     writeFile(join(folder, "index.js"), getContent(), err => {
-      if (err) {
-        console.log(err);
-      }
+      err && console.error(err);
     });
-    writeFile(join(folder, "index.scss"), "", () => {});
+    // 初始化index.scss文件
+    writeFile(join(folder, "index.scss"), "", err => {
+      err && console.error(err);
+    });
   });
