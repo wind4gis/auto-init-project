@@ -2,10 +2,10 @@
 /*
  * @Date: 2020-3-3 18:30:09
  * @LastEditors: Huang canfeng
- * @LastEditTime: 2020-03-03 20:34:36
+ * @LastEditTime: 2020-03-04 10:16:29
  * @Description: 输入文件夹自动初始化对应的js和scss文件
  */
-const { join } = require("path");
+const { join, basename } = require("path");
 const { writeFile, mkdirSync, existsSync } = require("fs");
 const { from } = require("rxjs");
 const { map, scan } = require("rxjs/operators");
@@ -34,7 +34,7 @@ from(args)
       return;
     }
     // 初始化index.js文件
-    writeFile(join(folder, "index.js"), getContent(), err => {
+    writeFile(join(folder, "index.js"), getContent(basename(folder)), err => {
       err && console.error(err);
     });
     // 初始化index.scss文件
