@@ -2,16 +2,14 @@
 /*
  * @Date: 2020-3-3 18:30:09
  * @LastEditors: Huang canfeng
- * @LastEditTime: 2020-03-05 18:30:21
+ * @LastEditTime: 2020-03-08 20:18:12
  * @Description: 输入文件夹自动初始化对应的js和scss文件
  */
 const { join, basename } = require("path");
 const { writeFile, mkdirSync, existsSync } = require("fs");
 const { from } = require("rxjs");
-const { map, scan } = require("rxjs/operators");
-const getContent = require("./config");
-
-const { getJsContent, getScssContent } = getContent;
+const { map } = require("rxjs/operators");
+const parserConfig = require("./config");
 
 // 读取传入的文件夹参数
 const [, , ...args] = process.argv;
@@ -35,12 +33,11 @@ from(args)
       console.log("folder exists");
       return;
     }
-    // 初始化index.js文件
-    writeFile(join(folder, "index.js"), getJsContent(basename(folder)), err => {
-      err && console.error(err);
-    });
-    // 初始化index.scss文件
-    writeFile(join(folder, "index.scss"), getScssContent(), err => {
-      err && console.error(err);
+
+    // 根据配置文件里指定的文件后缀名以及模板内容，生成对应的文件
+    parserConfig.forEach(({ ext, parser }) => {
+      writeFile(join(folder, `index.${ext}`), parser(basename(folder)), err => {
+        err && console.error(err);
+      });
     });
   });
