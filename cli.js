@@ -2,7 +2,7 @@
 /*
  * @Date: 2020-3-3 18:30:09
  * @LastEditors: Huang canfeng
- * @LastEditTime: 2020-03-08 20:18:12
+ * @LastEditTime: 2020-03-24 10:37:25
  * @Description: 输入文件夹自动初始化对应的js和scss文件
  */
 const { join, basename } = require("path");
@@ -16,13 +16,25 @@ const [, , ...args] = process.argv;
 // 读取当前的工作目录
 const curFolder = process.cwd();
 
-from(args)
+let folderArgs = [],
+  force = false;
+
+folderArgs = args.reduce((total, cur) => {
+  if (!~cur.indexOf("-")) {
+    total.push(cur);
+  } else {
+    force = cur === "-f";
+  }
+  return total;
+}, []);
+
+from(folderArgs)
   .pipe(
     // 返回合并后的目录
     map(cur => join(curFolder, cur)),
     // 判断指定的目录是否已经存在
     map(folder => {
-      if (existsSync(folder)) return "";
+      if (existsSync(folder)) return force ? folder : "";
       mkdirSync(folder);
       return folder;
     })
