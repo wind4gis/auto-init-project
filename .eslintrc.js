@@ -20,5 +20,6 @@ module.exports = {
     "max-len": 0,
     "no-unused-vars": 1,
     "semi": 1,
+    "arrow-parens": 0,
   }
 };
